@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ReamyBoss — Developer & Data Engineer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&family=DM+Sans:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #080b0f;
+      --surface: #0d1117;
+      --card: #111820;
+      --border: #1e2a38;
+      --accent: #00e5ff;
+      --accent2: #ff6b35;
+      --accent3: #7fff6e;
+      --text: #e8edf2;
+      --muted: #5a6a7a;
+      --mono: 'Space Mono', monospace;
+      --display: 'Syne', sans-serif;
+      --body: 'DM Sans', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--body);
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* NOISE OVERLAY */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.4;
+    }
+
+    /* GRID BACKGROUND */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.2rem 4rem;
+      background: rgba(8,11,15,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+    }
+
+    .nav-logo span { color: var(--muted); }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--accent); }
+
+    /* HERO */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 8rem 4rem 4rem;
+      z-index: 1;
+    }
+
+    .hero-content {
+      max-width: 900px;
+    }
+
+    .hero-tag {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--accent);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .hero-tag::before {
+      content: '';
+      display: inline-block;
+      width: 2rem;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    .hero h1 {
+      font-family: var(--display);
+      font-size: clamp(3.5rem, 8vw, 7rem);
+      font-weight: 800;
+      line-height: 0.95;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero h1 .line1 { color: var(--text); display: block; }
+    .hero h1 .line2 {
+      display: block;
+      -webkit-text-stroke: 1px var(--accent);
+      color: transparent;
+    }
+
+    .hero-desc {
+      font-size: 1.1rem;
+      color: var(--muted);
+      max-width: 520px;
+      margin-bottom: 3rem;
+      font-weight: 300;
+      line-height: 1.8;
+    }
+
+    .hero-desc strong { color: var(--text); font-weight: 400; }
+
+    .hero-cta {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.85rem 2rem;
+      background: var(--accent);
+      color: var(--bg);
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+    }
+
+    .btn-primary:hover {
+      background: #fff;
+      transform: translateY(-2px);
+    }
+
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.85rem 2rem;
+      background: transparent;
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* STATS BAR */
+    .stats-bar {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      gap: 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+
+    .stat-item {
+      flex: 1;
+      padding: 2rem;
+      border-right: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .stat-item:last-child { border-right: none; }
+
+    .stat-number {
+      font-family: var(--mono);
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent);
+      display: block;
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-top: 0.25rem;
+    }
+
+    /* SECTIONS */
+    section {
+      position: relative;
+      z-index: 1;
+      padding: 6rem 4rem;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 3.5rem;
+    }
+
+    .section-num {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--accent);
+      letter-spacing: 0.2em;
+    }
+
+    .section-title {
+      font-family: var(--display);
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .section-line {
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* PROJECTS */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .project-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 2rem;
+      position: relative;
+      transition: all 0.3s;
+      overflow: hidden;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+
+    .project-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transition: transform 0.3s;
+      transform-origin: left;
+    }
+
+    .project-card:hover::before { transform: scaleX(1); }
+    .project-card:hover { border-color: rgba(0,229,255,0.3); transform: translateY(-4px); }
+
+    .project-card.featured {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .project-card.featured::before { background: var(--accent2); }
+
+    .project-tag {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      color: var(--accent);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .project-tag .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent3);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .project-name {
+      font-family: var(--display);
+      font-size: 1.6rem;
+      font-weight: 800;
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.02em;
+    }
+
+    .project-desc {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.7;
+      margin-bottom: 1.5rem;
+      font-weight: 300;
+    }
+
+    .project-tech {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .tech-tag {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      padding: 0.3rem 0.7rem;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      letter-spacing: 0.08em;
+    }
+
+    .project-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .p-stat {
+      padding: 1rem;
+      background: rgba(0,229,255,0.04);
+      border: 1px solid rgba(0,229,255,0.1);
+      text-align: center;
+    }
+
+    .p-stat-num {
+      font-family: var(--mono);
+      font-size: 1.5rem;
+      color: var(--accent2);
+      display: block;
+    }
+
+    .p-stat-label {
+      font-size: 0.7rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .project-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--accent);
+      text-decoration: none;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-top: 1.5rem;
+      transition: gap 0.2s;
+    }
+
+    .project-link:hover { gap: 0.7rem; }
+
+    /* SKILLS */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+
+    .skill-group {
+      background: var(--card);
+      padding: 2rem;
+    }
+
+    .skill-group-name {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--accent);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 1.25rem;
+    }
+
+    .skill-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .skill-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.88rem;
+      color: var(--text);
+    }
+
+    .skill-item::before {
+      content: '▸';
+      color: var(--accent2);
+      font-size: 0.7rem;
+    }
+
+    /* ABOUT */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.5fr;
+      gap: 4rem;
+      align-items: start;
+    }
+
+    .about-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 2rem;
+    }
+
+    .about-label {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      color: var(--muted);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+
+    .about-value {
+      font-size: 0.95rem;
+      color: var(--text);
+      margin-bottom: 1.5rem;
+    }
+
+    .about-value:last-child { margin-bottom: 0; }
+
+    .about-text p {
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.9;
+      margin-bottom: 1.25rem;
+      font-weight: 300;
+    }
+
+    .about-text p strong { color: var(--text); font-weight: 400; }
+
+    /* CONTACT */
+    .contact-section {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+    }
+
+    .contact-inner {
+      max-width: 600px;
+    }
+
+    .contact-links {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      margin-top: 2.5rem;
+    }
+
+    .contact-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 1.5rem;
+      background: var(--card);
+      text-decoration: none;
+      color: var(--text);
+      transition: all 0.2s;
+    }
+
+    .contact-link:hover {
+      background: rgba(0,229,255,0.05);
+      padding-left: 2rem;
+    }
+
+    .contact-link-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .contact-link-icon {
+      font-size: 1rem;
+      width: 2rem;
+      text-align: center;
+    }
+
+    .contact-link-name {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      letter-spacing: 0.05em;
+    }
+
+    .contact-link-handle {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .contact-link-arrow {
+      color: var(--accent);
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      transition: transform 0.2s;
+    }
+
+    .contact-link:hover .contact-link-arrow { transform: translateX(4px); }
+
+    /* FOOTER */
+    footer {
+      position: relative;
+      z-index: 1;
+      padding: 2rem 4rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    footer p {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+    }
+
+    .footer-status {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--accent3);
+    }
+
+    .status-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent3);
+      animation: pulse 2s infinite;
+    }
+
+    /* ANIMATIONS */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(24px);
+      animation: fadeUp 0.7s forwards;
+    }
+
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .fade-up:nth-child(1) { animation-delay: 0.1s; }
+    .fade-up:nth-child(2) { animation-delay: 0.25s; }
+    .fade-up:nth-child(3) { animation-delay: 0.4s; }
+    .fade-up:nth-child(4) { animation-delay: 0.55s; }
+
+    /* SCROLLBAR */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { display: none; }
+      .hero { padding: 7rem 1.5rem 3rem; }
+      section { padding: 4rem 1.5rem; }
+      .stats-bar { flex-direction: column; }
+      .stat-item { border-right: none; border-bottom: 1px solid var(--border); }
+      .project-card.featured { grid-template-columns: 1fr; }
+      .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+      footer { padding: 1.5rem; flex-direction: column; gap: 1rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">REAMY<span>/</span>BOSS</div>
+    <ul class="nav-links">
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-tag fade-up">Available for hire · Lagos, Nigeria</div>
+      <h1 class="fade-up">
+        <span class="line1">Building Systems</span>
+        <span class="line2">That Think.</span>
+      </h1>
+      <p class="hero-desc fade-up">
+        Self-taught <strong>developer & data engineer</strong> building full-stack products
+        at the intersection of AI, sports analytics, and backend systems.
+        Specializing in <strong>Python, FastAPI, Flutter</strong> and data pipelines.
+      </p>
+      <div class="hero-cta fade-up">
+        <a href="#projects" class="btn-primary">View My Work →</a>
+        <a href="#contact" class="btn-ghost">Get In Touch</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats-bar">
+    <div class="stat-item">
+      <span class="stat-number">3+</span>
+      <div class="stat-label">Live Projects</div>
+    </div>
+    <div class="stat-item">
+      <span class="stat-number">259</span>
+      <div class="stat-label">Matches Indexed</div>
+    </div>
+    <div class="stat-item">
+      <span class="stat-number">5+</span>
+      <div class="stat-label">Tech Stack Tools</div>
+    </div>
+    <div class="stat-item">
+      <span class="stat-number">∞</span>
+      <div class="stat-label">Problems to Solve</div>
+    </div>
+  </div>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <h2 class="section-title">Projects</h2>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="projects-grid">
+
+      <!-- FEATURED -->
+      <a href="https://github.com/Reamyboss/shield-matrix-engine" target="_blank" class="project-card featured">
+        <div class="project-left">
+          <div class="project-tag">
+            <span class="dot"></span>
+            Active · Featured Project
+          </div>
+          <div class="project-name">Shield Matrix Engine</div>
+          <p class="project-desc">
+            A full-stack AI-powered sports prediction SaaS. Scrapes data from Wikipedia, Wikidata,
+            and RSS feeds, runs a Poisson probability model across football and basketball leagues,
+            and serves predictions via a REST API consumed by a Flutter mobile frontend.
+            No paid APIs. Zero third-party dependency.
+          </p>
+          <div class="project-tech">
+            <span class="tech-tag">Python</span>
+            <span class="tech-tag">FastAPI</span>
+            <span class="tech-tag">Flutter</span>
+            <span class="tech-tag">SQLite</span>
+            <span class="tech-tag">Poisson Model</span>
+            <span class="tech-tag">BeautifulSoup</span>
+          </div>
+          <a href="https://github.com/Reamyboss/shield-matrix-engine" target="_blank" class="project-link">
+            View on GitHub →
+          </a>
+        </div>
+        <div class="project-stats">
+          <div class="p-stat">
+            <span class="p-stat-num">259</span>
+            <span class="p-stat-label">Matches Indexed</span>
+          </div>
+          <div class="p-stat">
+            <span class="p-stat-num">6h</span>
+            <span class="p-stat-label">Auto Refresh</span>
+          </div>
+          <div class="p-stat">
+            <span class="p-stat-num">10+</span>
+            <span class="p-stat-label">API Endpoints</span>
+          </div>
+          <div class="p-stat">
+            <span class="p-stat-num">v3</span>
+            <span class="p-stat-label">Current Version</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- PROJECT 2 -->
+      <div class="project-card">
+        <div class="project-tag">Content · AI</div>
+        <div class="project-name">Barnaby's World</div>
+        <p class="project-desc">
+          An AI-narrated YouTube pet storytelling channel. Generates scripts,
+          voiceovers via ElevenLabs, and video content with consistent character
+          identity — built as a passive income content pipeline.
+        </p>
+        <div class="project-tech">
+          <span class="tech-tag">ElevenLabs</span>
+          <span class="tech-tag">AI Scripting</span>
+          <span class="tech-tag">YouTube</span>
+          <span class="tech-tag">Content Pipeline</span>
+        </div>
+      </div>
+
+      <!-- PROJECT 3 -->
+      <div class="project-card">
+        <div class="project-tag">Content · Strategy</div>
+        <div class="project-name">World Cup 2026 TikTok</div>
+        <p class="project-desc">
+          A systematic short-form content strategy targeting World Cup 2026 across
+          US and UK TikTok accounts. Covers match previews, predictions, and
+          real-time tournament coverage for organic growth.
+        </p>
+        <div class="project-tech">
+          <span class="tech-tag">TikTok</span>
+          <span class="tech-tag">Content Strategy</span>
+          <span class="tech-tag">Sports Analytics</span>
+          <span class="tech-tag">Growth</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills" style="background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <h2 class="section-title">Skills</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="skills-grid">
+      <div class="skill-group">
+        <div class="skill-group-name">Backend</div>
+        <div class="skill-list">
+          <div class="skill-item">Python</div>
+          <div class="skill-item">FastAPI</div>
+          <div class="skill-item">SQLite / Databases</div>
+          <div class="skill-item">REST API Design</div>
+          <div class="skill-item">Data Pipelines</div>
+        </div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-name">Frontend & Mobile</div>
+        <div class="skill-list">
+          <div class="skill-item">Flutter / Dart</div>
+          <div class="skill-item">HTML / CSS / JS</div>
+          <div class="skill-item">Android Studio</div>
+          <div class="skill-item">Responsive Design</div>
+          <div class="skill-item">UI/UX Thinking</div>
+        </div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-name">Data & Analytics</div>
+        <div class="skill-list">
+          <div class="skill-item">Web Scraping</div>
+          <div class="skill-item">Poisson Modeling</div>
+          <div class="skill-item">Sports Analytics</div>
+          <div class="skill-item">BeautifulSoup</div>
+          <div class="skill-item">Data Annotation / AI</div>
+        </div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-name">Tools & Workflow</div>
+        <div class="skill-list">
+          <div class="skill-item">Git / GitHub</div>
+          <div class="skill-item">VS Code</div>
+          <div class="skill-item">Canva Pro</div>
+          <div class="skill-item">ElevenLabs</div>
+          <div class="skill-item">AI-Assisted Dev</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <h2 class="section-title">About</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="about-grid">
+      <div>
+        <div class="about-card">
+          <div class="about-label">Location</div>
+          <div class="about-value">Ikorodu, Lagos · Nigeria</div>
+          <div class="about-label">Status</div>
+          <div class="about-value" style="color: var(--accent3);">● Available for hire</div>
+          <div class="about-label">Focus</div>
+          <div class="about-value">Backend · Data Engineering · AI</div>
+          <div class="about-label">GitHub</div>
+          <div class="about-value">@Reamyboss</div>
+          <div class="about-label">Twitter / X</div>
+          <div class="about-value">@hadekunex</div>
+        </div>
+      </div>
+      <div class="about-text">
+        <p>
+          I'm a <strong>self-taught developer</strong> based in Lagos, Nigeria, building full-stack
+          systems that generate real value. My work sits at the intersection of backend engineering,
+          data pipelines, and AI tools.
+        </p>
+        <p>
+          My flagship project, <strong>Shield Matrix Engine</strong>, is a sports prediction API
+          I built entirely from scratch — no tutorials, no templates. It scrapes public data,
+          runs statistical models, and serves predictions to a Flutter mobile app.
+          That's the kind of problem I enjoy: end-to-end, real-world, zero shortcuts.
+        </p>
+        <p>
+          I'm currently open to <strong>freelance work, remote contracts, and AI annotation roles</strong>.
+          I work well independently, communicate clearly, and ship things that actually run.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="contact-section">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <h2 class="section-title">Contact</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="contact-inner">
+      <p style="color: var(--muted); font-size: 0.95rem; font-weight: 300; line-height: 1.8; margin-bottom: 0.5rem;">
+        Open to freelance projects, remote contracts, and collaboration.
+        Reach out on any of the platforms below.
+      </p>
+      <div class="contact-links">
+        <a href="https://github.com/Reamyboss" target="_blank" class="contact-link">
+          <div class="contact-link-left">
+            <span class="contact-link-icon">⌥</span>
+            <div>
+              <div class="contact-link-name">GitHub</div>
+              <div class="contact-link-handle">github.com/Reamyboss</div>
+            </div>
+          </div>
+          <span class="contact-link-arrow">→</span>
+        </a>
+        <a href="https://twitter.com/hadekunex" target="_blank" class="contact-link">
+          <div class="contact-link-left">
+            <span class="contact-link-icon">✕</span>
+            <div>
+              <div class="contact-link-name">Twitter / X</div>
+              <div class="contact-link-handle">@hadekunex</div>
+            </div>
+          </div>
+          <span class="contact-link-arrow">→</span>
+        </a>
+        <a href="mailto:aadewunmi30@gmail.com" class="contact-link">
+          <div class="contact-link-left">
+            <span class="contact-link-icon">@</span>
+            <div>
+              <div class="contact-link-name">Email</div>
+              <div class="contact-link-handle">aadewunmi30@gmail.com</div>
+            </div>
+          </div>
+          <span class="contact-link-arrow">→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2026 ReamyBoss · Built with intention from Lagos.</p>
+    <div class="footer-status">
+      <span class="status-dot"></span>
+      Available for work
+    </div>
+  </footer>
+
+</body>
+</html>
