@@ -3,12 +3,6 @@
 
 AI-powered sports prediction SaaS — built from scratch, zero paid APIs.
 
-Show Image
-Show Image
-Show Image
-Show Image
-Show Image
-
 What Is This?
 Shield Matrix Engine is a full-stack sports prediction platform that scrapes data from
 public sources, runs a Poisson probability model, and serves predictions through a
